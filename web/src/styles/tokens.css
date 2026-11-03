@@ -1,0 +1,178 @@
+/**
+ * 设计令牌（Design Tokens）
+ * ------------------------------------------------------------
+ * 功能：把颜色、字号、间距、圆角、阴影、动效、层级、布局尺寸收敛成唯一来源，
+ *      所有样式与组件只允许引用变量，不允许在业务代码里写死色值和像素。
+ * 业务：
+ *   1. 平台自身界面（列表 / 设计器 / 运行态）和用户搭建的页面必须看起来像同一个产品，
+ *      一旦色值和间距散落在各文件里，改一次主题要全项目搜索替换，必然漏改。
+ *   2. 令牌是「设计规范」的代码形态：文档页 /#/spec 直接读取这些变量渲染色卡，
+ *      文档与实现不会各说一套。
+ *   3. 命名分两层：基础令牌（--lc-brand-500、--lc-gray-200）表达「是什么」，
+ *      语义令牌（--lc-text-2、--lc-border）表达「用在哪」，业务样式优先用语义层。
+ * 约定：
+ *   - 数字刻度统一 4px 基数，间距只用 --lc-space-*，不要出现 13px、18px 这类随手值；
+ *   - 新增颜色先判断能否复用现有语义令牌，确实要加时同时补基础色阶与语义映射；
+ *   - 该文件必须最先加载（global.css 首行 @import），保证变量在使用前已定义。
+ */
+
+:root {
+  /* ---------- 品牌色阶：主色 #3b6ef6 为 500，向下变浅用于浅底，向上变深用于按下态 ---------- */
+  --lc-brand-25: #f5f8ff;
+  --lc-brand-50: #f0f4ff;
+  --lc-brand-100: #eef3ff;
+  --lc-brand-200: #e1e9ff;
+  --lc-brand-300: #d0deff;
+  --lc-brand-400: #a8bffc;
+  --lc-brand-500: #3b6ef6;
+  --lc-brand-600: #2f59d0;
+  --lc-brand-700: #2647a8;
+  --lc-brand-gradient: linear-gradient(135deg, #3b6ef6, #7b5bf0);
+
+  /* ---------- 中性色阶：0 为纯白，900 为最深文字色 ---------- */
+  --lc-gray-0: #ffffff;
+  --lc-gray-25: #fbfcfe;
+  --lc-gray-50: #f6f7f9;
+  --lc-gray-100: #eef0f4;
+  --lc-gray-200: #e5e7eb;
+  --lc-gray-300: #d3d7de;
+  --lc-gray-400: #b0b7c3;
+  --lc-gray-500: #98a2b3;
+  --lc-gray-600: #667085;
+  --lc-gray-700: #475467;
+  --lc-gray-800: #344054;
+  --lc-gray-900: #101828;
+
+  /* ---------- 语义色：状态反馈，每个都配「文字色 + 浅底 + 描边」三件套 ---------- */
+  --lc-success: #12b76a;
+  --lc-success-bg: #ecfdf3;
+  --lc-success-border: #a6f4c5;
+  --lc-warning: #f79009;
+  --lc-warning-bg: #fffaeb;
+  --lc-warning-border: #fedf89;
+  --lc-danger: #f04438;
+  /** 状态文字色：浅底上的深色文字，保证 4.5:1 对比度 */
+  --lc-success-text: #067647;
+  --lc-warning-text: #b54708;
+  --lc-danger-text: #b42318;
+  --lc-danger-bg: #fef3f2;
+  --lc-danger-border: #fecdca;
+  --lc-info: var(--lc-brand-500);
+  --lc-info-bg: var(--lc-brand-100);
+  --lc-info-border: var(--lc-brand-300);
+
+  /* ---------- 语义令牌：业务样式优先使用这一层 ---------- */
+  --lc-primary: var(--lc-brand-500);
+  --lc-primary-hover: var(--lc-brand-600);
+  /** 主色的浅一档，用于 hover 边框、次级强调文字（Element Plus light-3 同源） */
+  --lc-primary-light: #7d9dfa;
+  --lc-primary-soft: var(--lc-brand-100);
+  --lc-text: var(--lc-gray-900);
+  --lc-text-2: var(--lc-gray-600);
+  --lc-text-3: var(--lc-gray-500);
+  --lc-text-4: var(--lc-gray-400);
+  --lc-text-on-primary: var(--lc-gray-0);
+  --lc-border: var(--lc-gray-200);
+  --lc-border-strong: var(--lc-gray-300);
+  --lc-border-subtle: var(--lc-gray-100);
+  --lc-surface: var(--lc-gray-0);
+  --lc-surface-2: var(--lc-gray-25);
+  --lc-bg: var(--lc-gray-50);
+  --lc-bg-canvas: var(--lc-gray-100);
+  --lc-bg-hover: #f7f9fc;
+  --lc-bg-subtle: #f2f4f7;
+  /** 设计态选中/拖拽反馈：描边、内描边、落点填充 */
+  --lc-selection-outline: rgba(59, 110, 246, 0.5);
+  --lc-selection-inner: rgba(59, 110, 246, 0.25);
+  --lc-selection-fill: rgba(59, 110, 246, 0.04);
+  /** 半透明表面：查看器吸顶栏等需要透出底层内容的位置 */
+  --lc-surface-glass: rgba(255, 255, 255, 0.9);
+
+  /* ---------- 字体 ---------- */
+  --lc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  --lc-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* ---------- 字阶与行高：12/13 辅助、14 正文、16 小标题、20/24/32 标题 ---------- */
+  --lc-fs-caption: 12px;
+  --lc-fs-sm: 13px;
+  --lc-fs-body: 14px;
+  --lc-fs-title: 16px;
+  --lc-fs-h3: 20px;
+  --lc-fs-h2: 24px;
+  --lc-fs-h1: 32px;
+  --lc-lh-tight: 1.25;
+  --lc-lh-normal: 1.5;
+  --lc-lh-relaxed: 1.7;
+  --lc-fw-regular: 400;
+  --lc-fw-medium: 500;
+  --lc-fw-semibold: 600;
+  --lc-fw-bold: 700;
+
+  /* ---------- 间距刻度：4px 基数，命名按序号而不是像素值，便于整体缩放 ---------- */
+  --lc-space-1: 4px;
+  --lc-space-2: 8px;
+  --lc-space-3: 12px;
+  --lc-space-4: 16px;
+  --lc-space-5: 20px;
+  --lc-space-6: 24px;
+  --lc-space-8: 32px;
+  --lc-space-10: 40px;
+  --lc-space-12: 48px;
+
+  /* ---------- 圆角 ---------- */
+  --lc-radius-xs: 4px;
+  --lc-radius-sm: 6px;
+  --lc-radius-md: 8px;
+  --lc-radius-lg: 10px;
+  --lc-radius-xl: 12px;
+  --lc-radius-full: 999px;
+  --lc-radius: var(--lc-radius-lg);
+
+  /* ---------- 阴影：只表达层级，不用来装饰 ---------- */
+  --lc-shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --lc-shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.04);
+  --lc-shadow-md: 0 1px 2px rgba(16, 24, 40, 0.04), 0 12px 32px rgba(16, 24, 40, 0.05);
+  --lc-shadow-brand: 0 4px 10px rgba(59, 110, 246, 0.12);
+
+  /* ---------- 动效：交互反馈 150ms，布局变化 200ms，统一缓动 ---------- */
+  --lc-duration-fast: 150ms;
+  --lc-duration-base: 200ms;
+  --lc-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------- 层级：只保留必要的四层，避免 z-index 军备竞赛 ---------- */
+  --lc-z-badge: 5;
+  --lc-z-header: 10;
+  --lc-z-sticky: 20;
+  --lc-z-overlay: 1000;
+
+  /* ---------- 布局尺寸：设计器三栏与内容区最大宽度 ---------- */
+  --lc-header-h: 56px;
+  --lc-toolbar-h: 48px;
+  --lc-left-w: 252px;
+  --lc-right-w: 306px;
+  --lc-list-max: 1240px;
+  --lc-viewer-max: 1080px;
+
+  /* ---------- Element Plus 主题对齐：组件库的圆角/主色跟随令牌 ---------- */
+  --el-color-primary: var(--lc-primary);
+  --el-color-primary-light-3: var(--lc-primary-light);
+  --el-color-primary-light-5: var(--lc-brand-400);
+  --el-color-primary-light-7: var(--lc-brand-300);
+  --el-color-primary-light-8: var(--lc-brand-200);
+  --el-color-primary-light-9: var(--lc-brand-50);
+  --el-color-primary-dark-2: var(--lc-primary-hover);
+  --el-color-success: var(--lc-success);
+  --el-color-warning: var(--lc-warning);
+  --el-color-danger: var(--lc-danger);
+  --el-color-error: var(--lc-danger);
+  --el-color-info: var(--lc-gray-600);
+  --el-border-radius-base: var(--lc-radius-md);
+  --el-font-family: var(--lc-font-sans);
+}
+
+/* 运行时页面（用户搭建的页面）使用中性背景，与设计器画布保持一致 */
+html.lc-embed {
+  --lc-bg: transparent;
+  --lc-surface: transparent;
+}

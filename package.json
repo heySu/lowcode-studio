@@ -1,0 +1,18 @@
+{
+  "name": "lowcode-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "可视化低代码平台：Vue3 + Element Plus + Node/Express，schema 驱动的设计器与运行态",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "npm run dev --prefix server",
+    "dev:web": "npm run dev --prefix web",
+    "build": "npm run build --prefix web",
+    "start": "npm start --prefix server",
+    "doctor": "node scripts/doctor.mjs",
+    "test:e2e": "node scripts/e2e.mjs && node scripts/undo-test.mjs && node scripts/template-test.mjs && node scripts/compose-test.mjs && node scripts/interactive-test.mjs && node scripts/align-test.mjs && node scripts/io-test.mjs && node scripts/embed-test.mjs && node scripts/docs-test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

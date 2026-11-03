@@ -1,0 +1,24 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.tmp/
+web/.tmp/
+
+# 运行时数据：页面库与备份属于部署现场数据，不进版本库
+server/data/pages.json
+server/data/pages.json.bak
+server/data/*.bak
+
+# 测试与截图产物：每次跑测试都会重新生成，避免污染提交历史
+shots/
+scripts/*.png
+
+# 日志
+server.log
+*.log
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
+*.swp
